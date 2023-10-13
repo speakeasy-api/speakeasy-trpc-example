@@ -1,0 +1,196 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Speakeasy Bar API",
+    "description": "An API to order drinks from the Speakeasy Bar",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/find": {
+      "get": {
+        "operationId": "findByProductCode",
+        "summary": "Find a drink by product code",
+        "description": "Pass the product code of the drink to search for",
+        "tags": [
+          "drinks"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product code of the drink",
+            "example": "1234"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "drink": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "The name of the drink"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "NON_ALCOHOLIC",
+                            "BEER",
+                            "WINE",
+                            "SPIRIT",
+                            "OTHER"
+                          ],
+                          "description": "The type of drink"
+                        },
+                        "price": {
+                          "type": "number",
+                          "description": "The price of the drink"
+                        },
+                        "stock": {
+                          "type": "number",
+                          "description": "The number of drinks in stock"
+                        },
+                        "productCode": {
+                          "type": "string",
+                          "description": "The product code of the drink"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "A description of the drink"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "type",
+                        "price",
+                        "stock",
+                        "productCode",
+                        "description"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "example": {
+                  "drink": {
+                    "name": "Beer",
+                    "type": "BEER",
+                    "price": 5,
+                    "stock": 10,
+                    "productCode": "1234",
+                    "description": "A nice cold beer"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/error"
+          }
+        },
+        "x-speakeasy-name-override": "searchDrink",
+        "x-speakeasy-retries": {
+          "strategy": "backoff",
+          "backoff": {
+            "initialInterval": 500,
+            "maxInterval": 60000,
+            "maxElapsedTime": 3600000,
+            "exponent": 1.5
+          },
+          "statusCodes": [
+            "5XX"
+          ],
+          "retryConnectionErrors": true
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Authorization": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "responses": {
+      "error": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "issues": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "message"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "message",
+                "code"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    },
+    "schemas": {}
+  },
+  "tags": [
+    {
+      "name": "drinks",
+      "description": "Operations related to drinks"
+    }
+  ],
+  "externalDocs": {
+    "url": "http://example.com/docs"
+  },
+  "x-speakeasy-retries": {
+    "strategy": "backoff",
+    "backoff": {
+      "initialInterval": 500,
+      "maxInterval": 60000,
+      "maxElapsedTime": 3600000,
+      "exponent": 1.5
+    },
+    "statusCodes": [
+      "5XX"
+    ],
+    "retryConnectionErrors": true
+  }
+}
