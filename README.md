@@ -11,7 +11,8 @@
 
 </div>
 
-<hr />
+
+<h2>Speakeasy tRPC OpenAPI Example</h2>
 
 This example tRPC app demonstrates Speakeasy-recommended practices for generating clear OpenAPI specifications and SDKs.
 
